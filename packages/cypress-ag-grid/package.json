@@ -1,0 +1,35 @@
+{
+  "name": "cypress-ag-grid",
+  "version": "3.3.5",
+  "description": "Cypress plugin to interact with ag grid",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpmck/cypress-ag-grid.git"
+  },
+  "keywords": [
+    "aggrid",
+    "ag-grid",
+    "cypress",
+    "cypress-io",
+    "e2e testing",
+    "cypress table",
+    "cypress ag grid",
+    "cypress aggrid"
+  ],
+  "scripts": {
+    "test": "npx cypress run --headless --spec \"cypress/e2e/*.cy.js\"",
+    "test:v33": "npx cypress run --headless --spec \"cypress/e2e/*.v33.cy.js\"",
+    "test:v34": "npx cypress run --headless --spec \"cypress/e2e/*.v34.cy.js\"",
+    "test:v35": "npx cypress run --headless --spec \"cypress/e2e/*.v35.cy.js\"",
+    "test:watch": "npx cypress open"
+  },
+  "author": "Kerry McKeever <kerry@kerrymckeever.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@kpmck/ag-grid-core": "0.1.0"
+  },
+  "devDependencies": {
+    "cypress": "^15.12.0"
+  }
+}

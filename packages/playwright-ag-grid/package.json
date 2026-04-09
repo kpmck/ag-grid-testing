@@ -1,0 +1,23 @@
+{
+  "name": "playwright-ag-grid",
+  "version": "0.1.0",
+  "description": "Playwright helpers for interacting with AG Grid",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpmck/cypress-ag-grid.git"
+  },
+  "keywords": [
+    "ag-grid",
+    "aggrid",
+    "playwright",
+    "testing",
+    "e2e"
+  ],
+  "author": "Kerry McKeever <kerry@kerrymckeever.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@kpmck/ag-grid-core": "0.1.0"
+  }
+}

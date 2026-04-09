@@ -1,32 +1,15 @@
 {
-  "name": "cypress-ag-grid",
-  "version": "3.3.5",
-  "description": "Cypress plugin to interact with ag grid",
-  "main": "src/index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kpmck/cypress-ag-grid.git"
-  },
-  "keywords": [
-    "aggrid",
-    "ag-grid",
-    "cypress",
-    "cypress-io",
-    "e2e testing",
-    "cypress table",
-    "cypress ag grid",
-    "cypress aggrid"
+  "name": "ag-grid-testing",
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
   "scripts": {
-    "test": "npx cypress run --headless --spec \"cypress/e2e/*.cy.js\"",
-    "test:v33": "npx cypress run --headless --spec \"cypress/e2e/*.v33.cy.js\"",
-    "test:v34": "npx cypress run --headless --spec \"cypress/e2e/*.v34.cy.js\"",
-    "test:v35": "npx cypress run --headless --spec \"cypress/e2e/*.v35.cy.js\"",
-    "test:watch": "npx cypress open"
-  },
-  "author": "Kerry McKeever <kerry@kerrymckeever.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "cypress": "^15.12.0"
+    "test:core": "npm run test --workspace @kpmck/ag-grid-core",
+    "test": "npm run test --workspace cypress-ag-grid",
+    "test:v33": "npm run test:v33 --workspace cypress-ag-grid",
+    "test:v34": "npm run test:v34 --workspace cypress-ag-grid",
+    "test:v35": "npm run test:v35 --workspace cypress-ag-grid",
+    "test:watch": "npm run test:watch --workspace cypress-ag-grid"
   }
 }
