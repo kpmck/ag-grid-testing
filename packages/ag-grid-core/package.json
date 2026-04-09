@@ -8,6 +8,9 @@
   "exports": {
     ".": "./src/index.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "node --test"
   },

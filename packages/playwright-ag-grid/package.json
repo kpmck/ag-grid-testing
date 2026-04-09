@@ -16,6 +16,9 @@
     "test:v35": "playwright test tests/ag-grid-data.v35.spec.js tests/ag-grid-elements.v35.spec.js",
     "test:watch": "playwright test --ui"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kpmck/cypress-ag-grid.git"

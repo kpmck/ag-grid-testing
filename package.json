@@ -5,6 +5,9 @@
     "packages/*"
   ],
   "scripts": {
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish",
     "test:core": "npm run test --workspace @kpmck/ag-grid-core",
     "test:cypress": "npm run test:all --workspace cypress-ag-grid",
     "test:cypress:all": "npm run test:all --workspace cypress-ag-grid",
@@ -20,5 +23,8 @@
     "test:playwright:watch": "npm run test:watch --workspace playwright-ag-grid",
     "test:all": "npm run test:core && npm run test:cypress:all && npm run test:playwright:all",
     "test": "npm run test:all"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.30.0"
   }
 }

@@ -25,6 +25,9 @@
     "test:v35": "npx cypress run --headless --spec \"cypress/e2e/*.v35.cy.js\"",
     "test:watch": "npx cypress open"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Kerry McKeever <kerry@kerrymckeever.com>",
   "license": "MIT",
   "dependencies": {
