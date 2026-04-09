@@ -1,5 +1,7 @@
 # playwright-ag-grid
 
+![Playwright](./docs/images/playwright-logo.png)
+
 Playwright helpers for interacting with and validating AG Grid.
 
 ## Table of Contents

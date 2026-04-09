@@ -1,4 +1,7 @@
 # cypress-ag-grid
+
+![Cypress](./docs/images/cypress-logo.png)
+
 Cypress plugin for interacting with and validating against ag grid.
 
 ## Table of Contents

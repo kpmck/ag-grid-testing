@@ -1,5 +1,7 @@
 # ag-grid-testing
 
+![AG Grid](./docs/images/ag-grid-logo.png)
+
 AG Grid test helpers for interacting with and validating against AG Grid.
 
 This monorepo contains packages for different test runners, backed by a shared core package for the framework-agnostic AG Grid logic. The goal is to keep the AG Grid DOM traversal and interaction behavior in one place so it can be reused across tools.
@@ -29,7 +31,7 @@ These packages are intended to make common AG Grid testing tasks easier, such as
 
 Chainable Cypress helpers for interacting with and validating AG Grid. ✅
 
-Docs: [`packages/cypress-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/cypress-ag-grid/README.md)  
+Docs: [`packages/cypress-ag-grid/README.md`](./packages/cypress-ag-grid/README.md)  
 npm: `cypress-ag-grid`
 
 ```bash
@@ -40,7 +42,7 @@ npm install cypress-ag-grid --save-dev
 
 Playwright helpers for interacting with and validating AG Grid using Playwright syntax. 🎭
 
-Docs: [`packages/playwright-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/playwright-ag-grid/README.md)  
+Docs: [`packages/playwright-ag-grid/README.md`](./packages/playwright-ag-grid/README.md)  
 npm: `playwright-ag-grid`
 
 ```bash
@@ -51,18 +53,18 @@ npm install playwright-ag-grid --save-dev
 
 The shared core package used by the Cypress and Playwright adapters. ⚙️
 
-Docs: [`packages/ag-grid-core/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/ag-grid-core/README.md)  
+Docs: [`packages/ag-grid-core/README.md`](./packages/ag-grid-core/README.md)  
 npm: `@kpmck/ag-grid-core`
 
 Most consumers should start with `cypress-ag-grid` or `playwright-ag-grid`.
 
 ## Start Here 👇
 
-If you're using Cypress, go straight to [`packages/cypress-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/cypress-ag-grid/README.md).
+If you're using Cypress, go straight to [`packages/cypress-ag-grid/README.md`](./packages/cypress-ag-grid/README.md).
 
-If you're using Playwright, go straight to [`packages/playwright-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/playwright-ag-grid/README.md).
+If you're using Playwright, go straight to [`packages/playwright-ag-grid/README.md`](./packages/playwright-ag-grid/README.md).
 
-If you're working on shared internals or contributing, start with [`packages/ag-grid-core/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/ag-grid-core/README.md).
+If you're working on shared internals or contributing, start with [`packages/ag-grid-core/README.md`](./packages/ag-grid-core/README.md).
 
 ## How It Is Structured 🧩
 
