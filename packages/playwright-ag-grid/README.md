@@ -41,6 +41,12 @@ import { createAgGrid, filterOperator, sort } from "playwright-ag-grid";
 
 ## Usage
 
+Consider the AG Grid example below:
+![AG Grid](../cypress-ag-grid/ag-grid-example.png)
+
+With the following DOM structure:
+![AG Grid Dom](../cypress-ag-grid/ag-grid-example-dom.png)
+
 ### Create the Grid Helper
 
 Create a helper instance from the top-level AG Grid locator, including headers and controls.
@@ -184,6 +190,8 @@ Option notes:
 
 Use `filterTextMenu(options)` to filter via the column menu:
 
+![AG Grid Dom - Filter by Text Menu](../cypress-ag-grid/ag-grid-example-filter-text-menu.png)
+
 ```javascript
 const grid = createAgGrid(page.locator("#myGrid"));
 
@@ -207,6 +215,8 @@ await grid.filterTextMenu({
 ### Filter by Text - Floating Filter
 
 Use `filterTextFloating(options)` to filter via a column's floating filter:
+
+![AG Grid Dom - Filter by Text Floating](../cypress-ag-grid/ag-grid-example-filter-text-floating.png)
 
 ```javascript
 const grid = createAgGrid(page.locator("#myGrid"));
@@ -242,6 +252,8 @@ await grid.filterTextFloating({
 });
 ```
 
+![AG Grid Dom - Filter by Text Floating Multi Condition](../cypress-ag-grid/ag-grid-example-filter-text-floating-multi-condition.png)
+
 For `Between`, pass two entries for the same column:
 
 ```javascript
@@ -265,6 +277,8 @@ await grid.filterTextFloating({
 ### Filter by Checkbox - Column Menu
 
 Use `filterCheckboxMenu(options)` to filter by checkbox values from the column menu:
+
+![AG Grid Dom - Filter by Checkbox Menu](../cypress-ag-grid/ag-grid-example-filter-checkbox-menu.png)
 
 ```javascript
 const grid = createAgGrid(page.locator("#myGrid"));
