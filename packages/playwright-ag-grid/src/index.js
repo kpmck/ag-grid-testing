@@ -113,15 +113,20 @@ async function getFilterColumnButton(rootLocator, columnName, isFloatingFilter =
 }
 
 async function toggleColumnCheckboxFilter(rootLocator, filterValue, doSelect) {
-  const label = rootLocator.locator(".ag-input-field-label").filter({
-    hasText: new RegExp(`^${escapeRegExp(filterValue)}$`),
-  }).first();
+  const label = rootLocator
+    .page()
+    .locator(".ag-popup .ag-input-field-label:visible")
+    .filter({
+      hasText: new RegExp(`^${escapeRegExp(filterValue)}$`),
+    })
+    .first();
+  await label.waitFor({ state: "visible" });
+  const toggle = label.locator("xpath=following-sibling::div[1]").first();
   const checkbox = label.locator("xpath=following-sibling::div[1]//input").first();
 
-  if (doSelect) {
-    await checkbox.check({ force: true });
-  } else {
-    await checkbox.uncheck({ force: true });
+  const isChecked = await checkbox.isChecked();
+  if (isChecked !== doSelect) {
+    await toggle.click({ force: true });
   }
 }
 
@@ -148,10 +153,24 @@ async function filterBySearchTerm(rootLocator, options) {
   if (isMultiFilter) {
     const selectAllText = options.selectAllLocaleText || "(Select All)";
     await toggleColumnCheckboxFilter(rootLocator, selectAllText, false);
+    const miniFilterInput = rootLocator
+      .page()
+      .locator(".ag-popup-child input:not([type='radio']):not([type='checkbox']):visible")
+      .first();
+    if (await miniFilterInput.count()) {
+      await miniFilterInput.fill("");
+      await miniFilterInput.type(`${filterValue}`);
+    }
   }
 
-  if (operator !== filterOperator.blank && operator !== filterOperator.notBlank) {
-    const input = rootLocator.locator(".ag-popup-child input:visible").nth(searchInputIndex);
+  if (
+    !isMultiFilter &&
+    operator !== filterOperator.blank &&
+    operator !== filterOperator.notBlank
+  ) {
+    const input = rootLocator
+      .locator(".ag-popup-child input:not([type='radio']):not([type='checkbox']):visible")
+      .nth(searchInputIndex);
     await input.fill("");
     await input.type(`${filterValue}`);
     await input.press("Enter");
