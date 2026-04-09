@@ -1,0 +1,31 @@
+{
+  "name": "@kpmck/ag-grid-core",
+  "version": "0.1.0",
+  "description": "Framework-agnostic AG Grid DOM helpers for Node-based test tooling",
+  "type": "module",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpmck/cypress-ag-grid.git"
+  },
+  "keywords": [
+    "ag-grid",
+    "aggrid",
+    "testing",
+    "dom",
+    "playwright",
+    "cypress"
+  ],
+  "author": "Kerry McKeever <kerry@kerrymckeever.com>",
+  "license": "MIT"
+}

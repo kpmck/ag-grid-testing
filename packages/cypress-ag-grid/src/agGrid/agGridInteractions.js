@@ -1,90 +1,33 @@
 /// <reference types="cypress" />
-import { filterOperator } from "./filterOperator.enum";
-import { filterTab } from "./menuTab.enum";
-import { sort } from "./sort.enum";
+import {
+  extractAgGridData,
+  extractAgGridElements,
+  filterOperator,
+  filterTab,
+  sort,
+  waitForAgGridAnimation,
+} from "@kpmck/ag-grid-core";
 
-function isRowNotDestroyed(rowElement) {
-  const rect = rowElement.getBoundingClientRect();
-  const viewPortRect = rowElement.parentElement.getBoundingClientRect();
+function getSingleAgGridRootElement(agGridElement) {
+  const rootElements = agGridElement.get();
 
-  return (
-    rect.top >= viewPortRect.top &&
-    rect.left >= viewPortRect.left &&
-    rect.bottom <= viewPortRect.bottom &&
-    rect.right <= viewPortRect.right
-  );
-}
-
-export const agGridWaitForAnimation = async (agGridElement) => {
-  if (agGridElement.get().length < 1) {
+  if (rootElements.length < 1) {
     throw new Error(`Couldn't find the element ${agGridElement}`);
   }
 
-  const AG_GRID_ANIMATION_TIMEOUT_MS = 5000;
-  const agGridRootElement = agGridElement.get()[0];
-  const animations = agGridRootElement.getAnimations({ subtree: true });
-
-  const agGridAnimations = animations.filter((animation) => {
-    const animationTarget = animation.effect?.target;
-    if (
-      !animationTarget ||
-      animationTarget.nodeType !== 1 ||
-      !animationTarget.classList
-    ) {
-      return false;
-    }
-
-    const hasAgGridClass = [...animationTarget.classList].some((className) =>
-      className.startsWith("ag-")
+  if (rootElements.length > 1) {
+    throw new Error(
+      `Selector "${agGridElement.selector}" returned more than 1 element.`
     );
+  }
 
-    return (
-      animationTarget === agGridRootElement ||
-      hasAgGridClass
-    );
-  });
+  return rootElements[0];
+}
 
-  // Filter out infinite animations (e.g. loading spinners) whose .finished
-  // promise never resolves per the Web Animations API spec.
-  const finiteAnimations = agGridAnimations.filter((animation) => {
-    const iterations = animation.effect?.getTiming?.()?.iterations;
-    return iterations !== Infinity;
-  });
-
-  await Promise.race([
-    Promise.all(
-      finiteAnimations.map(async (animation) => {
-        try {
-          await animation.finished;
-        } catch (error) {
-          if (error.name === "AbortError") return;
-          console.error("error", error, error.name);
-          throw error;
-        }
-      })
-    ),
-    new Promise((resolve) => {
-      setTimeout(resolve, AG_GRID_ANIMATION_TIMEOUT_MS);
-    }),
-  ]);
-
+export const agGridWaitForAnimation = async (agGridElement) => {
+  await waitForAgGridAnimation(getSingleAgGridRootElement(agGridElement));
   return agGridElement;
 };
-
-/**
- * Uses the attribute value's index and sorts the data accordingly.
- * For our purposes, we are getting the attribute with the items' indices and sorting accordingly.
- *
- * @param {*} index
- * @returns
- */
-function sortElementsByAttributeValue(attribute) {
-  return (a, b) => {
-    const contentA = parseInt(a.attributes[attribute].nodeValue, 10).valueOf();
-    const contentB = parseInt(b.attributes[attribute].nodeValue, 10).valueOf();
-    return contentA < contentB ? -1 : contentA > contentB ? 1 : 0;
-  };
-}
 
 /**
  * Retrieves the values from the *displayed* page in ag grid and assigns each value to its respective column name.
@@ -92,8 +35,7 @@ function sortElementsByAttributeValue(attribute) {
  * @param options Provide an array of columns you wish to exclude from the table retrieval.
  */
 export const getAgGridData = async (agGridElement, options = {}) => {
-  await agGridWaitForAnimation(agGridElement);
-  return _getAgGrid(agGridElement, options, false);
+  return extractAgGridData(getSingleAgGridRootElement(agGridElement), options);
 };
 
 /**
@@ -102,127 +44,11 @@ export const getAgGridData = async (agGridElement, options = {}) => {
  * @param options Provide an array of columns you wish to exclude from the table retrieval.
  */
 export const getAgGridElements = async (agGridElement, options = {}) => {
-  await agGridWaitForAnimation(agGridElement);
-  return _getAgGrid(agGridElement, options, true);
-};
-
-function _getAgGrid(agGridElement, options = {}, returnElements) {
-  const agGridColumnSelectors =
-    ".ag-pinned-left-cols-container^.ag-center-cols-clipper^.ag-center-cols-viewport^.ag-pinned-right-cols-container";
-  if (agGridElement.get().length > 1)
-    throw new Error(
-      `Selector "${agGridElement.selector}" returned more than 1 element.`
-    );
-
-  const tableElement = agGridElement.get()[0].querySelectorAll(".ag-root")[0];
-  const agGridSelectors = agGridColumnSelectors.split("^");
-  const headers = [
-    ...tableElement.querySelectorAll(".ag-header-row-column [aria-colindex]"),
-  ]
-    .sort(sortElementsByAttributeValue("aria-colindex"))
-    .map((headerElement) => {
-      // Check if the elements returned are already .ag-header-cell-text elements
-      // If not, query for that element and return the text content
-      let headerCells = [
-        ...headerElement.querySelectorAll(".ag-header-cell-text"),
-      ];
-      if (headerCells.length === 0) {
-        return [headerElement].map((e) => e.textContent.trim());
-      } else {
-        return [...headerElement.querySelectorAll(".ag-header-cell-text")].map(
-          (e) => e.textContent.trim()
-        );
-      }
-    })
-    .flat();
-
-  let allRows = [];
-  let rows = [];
-
-  agGridSelectors.forEach((selector) => {
-    const _rows = [
-      ...tableElement.querySelectorAll(
-        `${selector}:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)`
-      ),
-    ]
-      // When animation is enabled, ag-grid destroys rows in 2 phases,
-      // first it runs an animation to place rows to be destroyed just outside
-      // the viewport.
-      // In the second phase those rows are removed from the DOM.
-      // Because we get here AFTER all animations are finished, it is possible,
-      // those rows are still in the DOM, but are not visible.
-      // therefore those rows should be filtered out.
-      .filter(isRowNotDestroyed)
-      // Sort rows by their row-index attribute value
-      .sort(sortElementsByAttributeValue("row-index"))
-      .map((row) => {
-        // Sort row cells by their aria-colindex attribute value
-        // First check if elements returned already contain the aria-colindex
-        // If not, just query for the .ag-cell
-        let rowCells = [...row.querySelectorAll(".ag-cell[aria-colindex]")];
-        if (rowCells.length === 0) {
-          rowCells = [...row.querySelectorAll(".ag-cell")];
-        }
-        const rowIndex = parseInt(
-          row.attributes["row-index"].nodeValue,
-          10
-        ).valueOf();
-
-        if (allRows[rowIndex]) {
-          allRows[rowIndex] = [...allRows[rowIndex], ...rowCells];
-        } else {
-          allRows[rowIndex] = rowCells;
-        }
-      });
-  });
-  // Remove any empty arrays before merging
-  allRows = allRows.filter(function (ele) {
-    return ele.length;
-  });
-
-  // Remove duplicate entries from allRows
-  // In some instances we see cell duplication for non-unique rows
-  allRows = allRows.map((row) => {
-    return row.filter((cell, index) => {
-      return row.indexOf(cell) === index;
-    });
-  });
-
-  if (!allRows.length) rows = [];
-  else {
-    rows = allRows
-      .filter((rowCells) => rowCells.length)
-      .map((rowCells) =>
-        rowCells
-          .sort(sortElementsByAttributeValue("aria-colindex"))
-          .map((e) => {
-            if (returnElements) {
-              return e;
-            } else {
-              return e.textContent.trim();
-            }
-          })
-      );
-  }
-  // if options.rawValues = true, return headers & rows values as arrays instead of mapping as objects
-  if (options.valuesArray) {
-    return { headers, rows };
-  }
-  // return structured object from headers and rows variables
-  return rows.map((row) =>
-    row.reduce((acc, curr, idx) => {
-      if (
-        //@ts-ignore
-        (options.onlyColumns && !options.onlyColumns.includes(headers[idx])) ||
-        headers[idx] === undefined
-      ) {
-        // dont include columns that are not present in onlyColumns, or if the header is undefined
-        return { ...acc };
-      }
-      return { ...acc, [headers[idx]]: curr };
-    }, {})
+  return extractAgGridElements(
+    getSingleAgGridRootElement(agGridElement),
+    options
   );
-}
+};
 
 /**
  * Retrieve the ag grid column header element based on its column name value

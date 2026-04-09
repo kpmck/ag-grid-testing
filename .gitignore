@@ -3,3 +3,5 @@ node_modules
 cypress/screenshots
 cypress/videos
 .DS_Store
+packages/playwright-ag-grid/test-results
+packages/playwright-ag-grid/playwright-report
