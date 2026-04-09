@@ -1,6 +1,6 @@
 {
   "name": "playwright-ag-grid",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Playwright helpers for interacting with AG Grid",
   "type": "module",
   "main": "src/index.js",
@@ -33,7 +33,7 @@
   "author": "Kerry McKeever <kerry@kerrymckeever.com>",
   "license": "MIT",
   "dependencies": {
-    "@kpmck/ag-grid-core": "0.1.0"
+    "@kpmck/ag-grid-core": "1.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"

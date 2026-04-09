@@ -1,6 +1,6 @@
 {
   "name": "cypress-ag-grid",
-  "version": "3.3.5",
+  "version": "3.4.0",
   "description": "Cypress plugin to interact with ag grid",
   "main": "src/index.js",
   "repository": {
@@ -31,7 +31,7 @@
   "author": "Kerry McKeever <kerry@kerrymckeever.com>",
   "license": "MIT",
   "dependencies": {
-    "@kpmck/ag-grid-core": "0.1.0"
+    "@kpmck/ag-grid-core": "1.0.0"
   },
   "devDependencies": {
     "cypress": "^15.12.0"
