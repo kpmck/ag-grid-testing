@@ -1,28 +1,102 @@
 # ag-grid-testing
 
-Monorepo for Node-based AG Grid test helpers.
+AG Grid test helpers for interacting with and validating against AG Grid.
 
-Current packages:
+This monorepo contains packages for different test runners, backed by a shared core package for the framework-agnostic AG Grid logic. The goal is to keep the AG Grid DOM traversal and interaction behavior in one place so it can be reused across tools.
 
-- `@kpmck/ag-grid-core`: framework-agnostic DOM and utility logic
-- `cypress-ag-grid`: Cypress plugin package, preserving the existing npm package name
-- `playwright-ag-grid`: Playwright adapter package
+## A Few Highlights
 
-## Workspace Scripts
+- Read AG Grid row data without hand-rolling DOM parsing
+- Filter by text, checkbox values, floating filters, and multi-filters
+- Sort, pin, toggle columns, and edit cells in tests
+- Reuse the same core AG Grid behavior across Cypress and Playwright
 
-From the repository root:
+## What This Repo Contains
+
+These packages are intended to make common AG Grid testing tasks easier, such as:
+
+- getting row data from the grid
+- selecting only certain columns
+- filtering by text or checkbox values
+- sorting and pinning columns
+- toggling columns from the sidebar
+- editing cells in tests
+- validating grid contents
+
+## Pick Your Runner 🚦
+
+### `cypress-ag-grid`
+
+Chainable Cypress helpers for interacting with and validating AG Grid. ✅
+
+Docs: [`packages/cypress-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/cypress-ag-grid/README.md)  
+npm: `cypress-ag-grid`
 
 ```bash
-npm run test
-npm run test:v33
-npm run test:v34
-npm run test:v35
-npm run test:watch
+npm install cypress-ag-grid --save-dev
 ```
 
-These forward to the `cypress-ag-grid` workspace package.
+### `playwright-ag-grid`
 
-## Package Layout
+Playwright helpers for interacting with and validating AG Grid using Playwright syntax. 🎭
+
+Docs: [`packages/playwright-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/playwright-ag-grid/README.md)  
+npm: `playwright-ag-grid`
+
+```bash
+npm install playwright-ag-grid --save-dev
+```
+
+### `@kpmck/ag-grid-core`
+
+The shared core package used by the Cypress and Playwright adapters. ⚙️
+
+Docs: [`packages/ag-grid-core/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/ag-grid-core/README.md)  
+npm: `@kpmck/ag-grid-core`
+
+Most consumers should start with `cypress-ag-grid` or `playwright-ag-grid`.
+
+## Start Here 👇
+
+If you're using Cypress, go straight to [`packages/cypress-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/cypress-ag-grid/README.md).
+
+If you're using Playwright, go straight to [`packages/playwright-ag-grid/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/playwright-ag-grid/README.md).
+
+If you're working on shared internals or contributing, start with [`packages/ag-grid-core/README.md`](/Users/kerrymckeever/WebstormProjects/cypress-ag-grid/packages/ag-grid-core/README.md).
+
+## How It Is Structured 🧩
+
+```text
+cypress-ag-grid / playwright-ag-grid
+      |
+      v
+      ag-grid-core
+      |
+      v
+AG Grid DOM traversal and shared helper logic
+```
+
+## Workspace Commands 🧪
+
+Run everything from the repository root:
+
+```bash
+npm run test:core
+
+npm run test:cypress:all
+npm run test:cypress:v33
+npm run test:cypress:v34
+npm run test:cypress:v35
+npm run test:cypress:watch
+
+npm run test:playwright:all
+npm run test:playwright:v33
+npm run test:playwright:v34
+npm run test:playwright:v35
+npm run test:playwright:watch
+```
+
+## Monorepo Layout 📦
 
 ```text
 packages/
@@ -31,7 +105,6 @@ packages/
   playwright-ag-grid/
 ```
 
-## Repository Naming
+## Why This Exists 💡
 
-The local monorepo root now uses the neutral workspace name `ag-grid-testing`.
-If you rename the GitHub repository to match, update the repository URLs in the package manifests at the same time.
+AG Grid is powerful, but it can also be tedious to automate directly because of its DOM structure and filtering behavior. This repo exists to keep that logic in one place and make it easier to use from multiple node-based test runners.
