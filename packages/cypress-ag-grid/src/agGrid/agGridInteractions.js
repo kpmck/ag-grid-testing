@@ -2,11 +2,11 @@
 import {
   extractAgGridData,
   extractAgGridElements,
+  filterOperator,
+  filterTab,
+  sort,
   waitForAgGridAnimation,
 } from "@kpmck/ag-grid-core";
-import { filterOperator } from "./filterOperator.enum";
-import { filterTab } from "./menuTab.enum";
-import { sort } from "./sort.enum";
 
 function getSingleAgGridRootElement(agGridElement) {
   const rootElements = agGridElement.get();

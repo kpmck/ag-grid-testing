@@ -6,10 +6,19 @@
   ],
   "scripts": {
     "test:core": "npm run test --workspace @kpmck/ag-grid-core",
-    "test": "npm run test --workspace cypress-ag-grid",
-    "test:v33": "npm run test:v33 --workspace cypress-ag-grid",
-    "test:v34": "npm run test:v34 --workspace cypress-ag-grid",
-    "test:v35": "npm run test:v35 --workspace cypress-ag-grid",
-    "test:watch": "npm run test:watch --workspace cypress-ag-grid"
+    "test:cypress": "npm run test:all --workspace cypress-ag-grid",
+    "test:cypress:all": "npm run test:all --workspace cypress-ag-grid",
+    "test:cypress:v33": "npm run test:v33 --workspace cypress-ag-grid",
+    "test:cypress:v34": "npm run test:v34 --workspace cypress-ag-grid",
+    "test:cypress:v35": "npm run test:v35 --workspace cypress-ag-grid",
+    "test:cypress:watch": "npm run test:watch --workspace cypress-ag-grid",
+    "test:playwright": "npm run test:all --workspace playwright-ag-grid",
+    "test:playwright:all": "npm run test:all --workspace playwright-ag-grid",
+    "test:playwright:v33": "npm run test:v33 --workspace playwright-ag-grid",
+    "test:playwright:v34": "npm run test:v34 --workspace playwright-ag-grid",
+    "test:playwright:v35": "npm run test:v35 --workspace playwright-ag-grid",
+    "test:playwright:watch": "npm run test:watch --workspace playwright-ag-grid",
+    "test:all": "npm run test:core && npm run test:cypress:all && npm run test:playwright:all",
+    "test": "npm run test:all"
   }
 }

@@ -5,6 +5,10 @@ export interface AgGridExtractionOptions {
   timeoutMs?: number;
 }
 
+export declare const filterOperator: Record<string, string>;
+export declare const sort: Record<string, string>;
+export declare const filterTab: Record<string, string>;
+
 export declare function isRowNotDestroyed(rowElement: Element): boolean;
 
 export declare function waitForAgGridAnimation(
@@ -28,3 +32,13 @@ export declare function extractAgGridElements(
   agGridRootElement: Element,
   options?: AgGridExtractionOptions
 ): Promise<Array<Record<string, Element>> | { headers: string[]; rows: Element[][] }>;
+
+export declare function browserExtractAgGrid(
+  agGridRootElement: Element,
+  options?: AgGridExtractionOptions
+): Array<Record<string, string>> | { headers: string[]; rows: string[][] };
+
+export declare function browserWaitForAgGridAnimation(
+  agGridRootElement: Element,
+  options?: AgGridExtractionOptions
+): Promise<void>;
