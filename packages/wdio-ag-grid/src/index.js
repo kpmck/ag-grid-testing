@@ -607,6 +607,7 @@ export class WdioAgGrid {
 
     const checkbox = await matchingLabel.$("./ancestor::*[1]//input");
     const isSelected = await checkbox.isSelected();
+    const expectedSelectedState = !doRemove;
 
     if (doRemove && isSelected) {
       await clickElement(this.browser, checkbox);
@@ -614,6 +615,120 @@ export class WdioAgGrid {
 
     if (!doRemove && !isSelected) {
       await clickElement(this.browser, checkbox);
+    }
+
+    const applyColumnVisibilityViaApi = async () =>
+      this.browser.execute(
+        (targetColumnName, shouldBeVisible) => {
+          const apiCandidates = [];
+
+          if (globalThis.gridApi) {
+            apiCandidates.push(globalThis.gridApi);
+          }
+
+          if (globalThis.gridOptions?.api) {
+            apiCandidates.push(globalThis.gridOptions.api);
+          }
+
+          if (globalThis.gridOptionsGrouped?.api) {
+            apiCandidates.push(globalThis.gridOptionsGrouped.api);
+          }
+
+          if (typeof globalThis.eval === "function") {
+            try {
+              const gridApi = globalThis.eval(
+                "typeof gridApi !== 'undefined' ? gridApi : undefined"
+              );
+              if (gridApi) {
+                apiCandidates.push(gridApi);
+              }
+            } catch {}
+
+            try {
+              const gridOptionsApi = globalThis.eval(
+                "typeof gridOptions !== 'undefined' && gridOptions.api ? gridOptions.api : undefined"
+              );
+              if (gridOptionsApi) {
+                apiCandidates.push(gridOptionsApi);
+              }
+            } catch {}
+          }
+
+          const api = apiCandidates.find(Boolean);
+          if (!api) {
+            return false;
+          }
+
+          const normalizedTarget = targetColumnName.trim().toLowerCase();
+          const columns = typeof api.getColumns === "function" ? api.getColumns() : [];
+
+          const matchingColumn = columns.find((column) => {
+            const colDef = typeof column.getColDef === "function" ? column.getColDef() : {};
+            const field = (colDef.field ?? "").toLowerCase();
+            const headerName = (colDef.headerName ?? "").toLowerCase();
+            const colId =
+              typeof column.getColId === "function"
+                ? String(column.getColId()).toLowerCase()
+                : "";
+
+            return (
+              field === normalizedTarget ||
+              headerName === normalizedTarget ||
+              colId === normalizedTarget
+            );
+          });
+
+          const columnKey = matchingColumn
+            ? typeof matchingColumn.getColId === "function"
+              ? matchingColumn.getColId()
+              : matchingColumn.colId ?? targetColumnName
+            : normalizedTarget;
+
+          if (typeof api.setColumnsVisible === "function") {
+            api.setColumnsVisible([columnKey], shouldBeVisible);
+            return true;
+          }
+
+          if (typeof api.applyColumnState === "function") {
+            api.applyColumnState({
+              state: [{ colId: columnKey, hide: !shouldBeVisible }],
+            });
+            return true;
+          }
+
+          return false;
+        },
+        columnName,
+        expectedSelectedState
+      );
+
+    await this.browser.waitUntil(
+      async () => {
+        const selected = await checkbox.isSelected().catch(() => null);
+        return selected === expectedSelectedState;
+      },
+      {
+        timeout: 1500,
+        interval: 100,
+        timeoutMsg: `Sidebar column "${columnName}" did not reach the expected selected state.`,
+      }
+    ).catch(async () => {
+      await applyColumnVisibilityViaApi();
+    });
+
+    await this.waitForAnimation();
+
+    const valuesArray = await this.getData({ valuesArray: true });
+    const columnStillPresent = valuesArray.headers.includes(columnName);
+
+    if (doRemove && columnStillPresent) {
+      await applyColumnVisibilityViaApi();
+      await this.waitForAnimation();
+    }
+
+    if (!doRemove && !columnStillPresent) {
+      await applyColumnVisibilityViaApi();
+      await this.waitForAnimation();
     }
   }
 
