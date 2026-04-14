@@ -21,7 +21,13 @@
     "test:playwright:v34": "npm run test:v34 --workspace playwright-ag-grid",
     "test:playwright:v35": "npm run test:v35 --workspace playwright-ag-grid",
     "test:playwright:watch": "npm run test:watch --workspace playwright-ag-grid",
-    "test:all": "npm run test:core && npm run test:cypress:all && npm run test:playwright:all",
+    "test:wdio": "npm run test:all --workspace wdio-ag-grid",
+    "test:wdio:all": "npm run test:all --workspace wdio-ag-grid",
+    "test:wdio:v33": "npm run test:v33 --workspace wdio-ag-grid",
+    "test:wdio:v34": "npm run test:v34 --workspace wdio-ag-grid",
+    "test:wdio:v35": "npm run test:v35 --workspace wdio-ag-grid",
+    "test:wdio:watch": "npm run test:watch --workspace wdio-ag-grid",
+    "test:all": "npm run test:core && npm run test:cypress:all && npm run test:playwright:all && npm run test:wdio:all",
     "test": "npm run test:all"
   },
   "devDependencies": {
