@@ -11,7 +11,7 @@ This monorepo contains packages for different test runners, backed by a shared c
 - Read AG Grid row data without hand-rolling DOM parsing
 - Filter by text, checkbox values, floating filters, and multi-filters
 - Sort, pin, toggle columns, and edit cells in tests
-- Reuse the same core AG Grid behavior across Cypress and Playwright
+- Reuse the same core AG Grid behavior across Cypress, Playwright, and WebdriverIO
 
 ## What This Repo Contains
 
@@ -49,6 +49,17 @@ npm: `playwright-ag-grid`
 npm install playwright-ag-grid --save-dev
 ```
 
+### `wdio-ag-grid`
+
+WebdriverIO helpers for interacting with and validating AG Grid using WDIO element APIs. 🌐
+
+Docs: [`packages/wdio-ag-grid/README.md`](./packages/wdio-ag-grid/README.md)  
+npm: `wdio-ag-grid`
+
+```bash
+npm install wdio-ag-grid --save-dev
+```
+
 ### `@kpmck/ag-grid-core`
 
 The shared core package used by the Cypress and Playwright adapters. ⚙️
@@ -56,7 +67,7 @@ The shared core package used by the Cypress and Playwright adapters. ⚙️
 Docs: [`packages/ag-grid-core/README.md`](./packages/ag-grid-core/README.md)  
 npm: `@kpmck/ag-grid-core`
 
-Most consumers should start with `cypress-ag-grid` or `playwright-ag-grid`.
+Most consumers should start with `cypress-ag-grid`, `playwright-ag-grid`, or `wdio-ag-grid`.
 
 ## Start Here 👇
 
@@ -64,12 +75,14 @@ If you're using Cypress, go straight to [`packages/cypress-ag-grid/README.md`](.
 
 If you're using Playwright, go straight to [`packages/playwright-ag-grid/README.md`](./packages/playwright-ag-grid/README.md).
 
+If you're using WebdriverIO, go straight to [`packages/wdio-ag-grid/README.md`](./packages/wdio-ag-grid/README.md).
+
 If you're working on shared internals or contributing, start with [`packages/ag-grid-core/README.md`](./packages/ag-grid-core/README.md).
 
 ## How It Is Structured 🧩
 
 ```text
-cypress-ag-grid / playwright-ag-grid
+cypress-ag-grid / playwright-ag-grid / wdio-ag-grid
       |
       v
       ag-grid-core
@@ -96,6 +109,12 @@ npm run test:playwright:v33
 npm run test:playwright:v34
 npm run test:playwright:v35
 npm run test:playwright:watch
+
+npm run test:wdio:all
+npm run test:wdio:v33
+npm run test:wdio:v34
+npm run test:wdio:v35
+npm run test:wdio:watch
 ```
 
 ## Monorepo Layout 📦
@@ -105,6 +124,7 @@ packages/
   ag-grid-core/
   cypress-ag-grid/
   playwright-ag-grid/
+  wdio-ag-grid/
 ```
 
 ## Why This Exists 💡

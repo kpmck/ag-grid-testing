@@ -1,0 +1,41 @@
+{
+  "name": "wdio-ag-grid",
+  "version": "1.0.0",
+  "description": "WebdriverIO helpers for interacting with AG Grid",
+  "type": "module",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "npm run test:all",
+    "test:all": "npm run test:v33 && npm run test:v34 && npm run test:v35",
+    "test:v33": "node --test --test-concurrency=1 tests/ag-grid-data.v33.spec.js tests/ag-grid-elements.v33.spec.js",
+    "test:v34": "node --test --test-concurrency=1 tests/ag-grid-data.v34.spec.js tests/ag-grid-elements.v34.spec.js",
+    "test:v35": "node --test --test-concurrency=1 tests/ag-grid-data.v35.spec.js tests/ag-grid-elements.v35.spec.js tests/ag-grid-animation-wait.v35.spec.js",
+    "test:watch": "node --test --watch --test-concurrency=1 tests/ag-grid-data.v33.spec.js tests/ag-grid-data.v34.spec.js tests/ag-grid-data.v35.spec.js tests/ag-grid-elements.v33.spec.js tests/ag-grid-elements.v34.spec.js tests/ag-grid-elements.v35.spec.js tests/ag-grid-animation-wait.v35.spec.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpmck/cypress-ag-grid.git"
+  },
+  "keywords": [
+    "ag-grid",
+    "aggrid",
+    "webdriverio",
+    "wdio",
+    "testing",
+    "e2e"
+  ],
+  "author": "Kerry McKeever <kerry@kerrymckeever.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@kpmck/ag-grid-core": "1.0.0",
+    "chromedriver": "^146.0.6",
+    "webdriverio": "^9.27.0"
+  }
+}
