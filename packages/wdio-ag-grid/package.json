@@ -1,6 +1,6 @@
 {
   "name": "wdio-ag-grid",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "WebdriverIO helpers for interacting with AG Grid",
   "type": "module",
   "main": "src/index.js",
@@ -32,9 +32,9 @@
     "e2e"
   ],
   "author": "Kerry McKeever <kerry@kerrymckeever.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
-    "@kpmck/ag-grid-core": "1.0.0",
+    "@kpmck/ag-grid-core": "1.0.1",
     "chromedriver": "^146.0.6",
     "webdriverio": "^9.27.0"
   }

@@ -1,5 +1,14 @@
 # cypress-ag-grid
 
+## 3.4.1
+
+### Patch Changes
+
+- Update all published packages to declare the Apache-2.0 license and include the
+  repository license file for downstream consumers.
+- Updated dependencies
+  - @kpmck/ag-grid-core@1.0.1
+
 ## 3.4.0
 
 ### Minor Changes

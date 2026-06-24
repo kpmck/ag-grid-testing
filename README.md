@@ -4,6 +4,8 @@
 
 AG Grid test helpers for interacting with and validating against AG Grid.
 
+Licensed under the Apache License 2.0. See [LICENSE](./LICENSE).
+
 This monorepo contains packages for different test runners, backed by a shared core package for the framework-agnostic AG Grid logic. The goal is to keep the AG Grid DOM traversal and interaction behavior in one place so it can be reused across tools.
 
 ## A Few Highlights
