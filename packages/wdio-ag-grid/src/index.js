@@ -167,26 +167,39 @@ async function getFilterColumnButton(browser, rootElement, columnName, isFloatin
   return headerCell.$(".ag-header-cell-filter-button");
 }
 
-async function toggleColumnCheckboxFilter(browser, filterValue, doSelect) {
+async function findCheckboxFilterLabel(browser, filterValue) {
   const labels = await getVisibleElements(browser, ".ag-popup .ag-input-field-label");
 
   for (const label of labels) {
-    if ((await label.getText()).trim() !== filterValue) {
-      continue;
+    if ((await label.getText()).trim() === filterValue) {
+      return label;
     }
-
-    const checkbox = await label.$("./following-sibling::div[1]//input");
-    const toggle = await label.$("./following-sibling::div[1]");
-    const isChecked = await checkbox.isSelected();
-
-    if (isChecked !== doSelect) {
-      await clickElement(browser, toggle);
-    }
-
-    return;
   }
 
-  throw new Error(`Unable to find checkbox filter option "${filterValue}".`);
+  return null;
+}
+
+async function toggleColumnCheckboxFilter(browser, filterValue, doSelect) {
+  let label = null;
+
+  await browser.waitUntil(
+    async () => {
+      label = await findCheckboxFilterLabel(browser, filterValue);
+      return label !== null;
+    },
+    {
+      timeout: 3000,
+      timeoutMsg: `Unable to find checkbox filter option "${filterValue}".`,
+    }
+  );
+
+  const checkbox = await label.$("./following-sibling::div[1]//input");
+  const toggle = await label.$("./following-sibling::div[1]");
+  const isChecked = await checkbox.isSelected();
+
+  if (isChecked !== doSelect) {
+    await clickElement(browser, toggle);
+  }
 }
 
 async function filterBySearchTerm(browser, rootElement, options) {
@@ -742,20 +755,14 @@ export class WdioAgGrid {
       throw new Error(`Unable to find row matching ${JSON.stringify(rowMatcher)}.`);
     }
 
-    const valuesArray = await this.getData({ valuesArray: true });
-    const columnIndex = valuesArray.headers.indexOf(columnName);
+    const cellSelectors = await this.getData({ valuesArray: true, returnCellSelectors: true });
+    const columnIndex = cellSelectors.headers.indexOf(columnName);
 
     if (columnIndex === -1) {
       throw new Error(`Unable to find column "${columnName}".`);
     }
 
-    const visibleRows = await this.rootElement.$$(
-      ".ag-center-cols-clipper .ag-row:not(.ag-opacity-zero), .ag-center-cols-viewport .ag-row:not(.ag-opacity-zero)"
-    );
-
-    const rowElement = visibleRows[rowIndex];
-    const cells = await rowElement.$$(".ag-cell");
-    return cells[columnIndex];
+    return this.rootElement.$(cellSelectors.rows[rowIndex][columnIndex]);
   }
 }
 

@@ -1,8 +1,17 @@
-const AG_GRID_COLUMN_SELECTORS = [
-  ".ag-pinned-left-cols-container",
-  ".ag-center-cols-clipper",
-  ".ag-center-cols-viewport",
-  ".ag-pinned-right-cols-container",
+const AG_GRID_LEGACY_ROW_SELECTORS = [
+  ".ag-pinned-left-cols-container:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+  ".ag-center-cols-clipper:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+  ".ag-center-cols-viewport:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+  ".ag-pinned-right-cols-container:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+];
+
+const AG_GRID_ROW_LAYOUTS = [
+  {
+    containerSelector: ".ag-grid-scrolling-container",
+    rowSelectors: [
+      ".ag-grid-scrolling-container > .ag-row:not(.ag-opacity-zero):not(.ag-full-width-row)",
+    ],
+  },
 ];
 
 const DEFAULT_ANIMATION_TIMEOUT_MS = 5000;
@@ -164,6 +173,14 @@ function getRowCells(rowElement) {
   return [...rowElement.querySelectorAll(".ag-cell")];
 }
 
+function getRowSelectors(tableElement) {
+  const rowLayout = AG_GRID_ROW_LAYOUTS.find(
+    (layout) => tableElement.querySelectorAll(layout.containerSelector).length > 0
+  );
+
+  return rowLayout ? rowLayout.rowSelectors : AG_GRID_LEGACY_ROW_SELECTORS;
+}
+
 function getStructuredRows(allRows, returnElements) {
   if (!allRows.length) {
     return [];
@@ -210,12 +227,8 @@ export function extractAgGrid(tableRootElement, options = {}) {
   const headers = getAgGridHeaders(tableElement);
   let allRows = [];
 
-  AG_GRID_COLUMN_SELECTORS.forEach((selector) => {
-    [
-      ...tableElement.querySelectorAll(
-        `${selector}:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)`
-      ),
-    ]
+  getRowSelectors(tableElement).forEach((selector) => {
+    [...tableElement.querySelectorAll(selector)]
       .filter(isRowNotDestroyed)
       .sort(sortElementsByAttributeValue("row-index"))
       .forEach((rowElement) => {
@@ -307,11 +320,20 @@ export async function browserWaitForAgGridAnimation(
 }
 
 export function browserExtractAgGrid(agGridRootElement, options = {}) {
-  const agGridColumnSelectors = [
-    ".ag-pinned-left-cols-container",
-    ".ag-center-cols-clipper",
-    ".ag-center-cols-viewport",
-    ".ag-pinned-right-cols-container",
+  const agGridLegacyRowSelectors = [
+    ".ag-pinned-left-cols-container:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+    ".ag-center-cols-clipper:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+    ".ag-center-cols-viewport:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+    ".ag-pinned-right-cols-container:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)",
+  ];
+
+  const agGridRowLayouts = [
+    {
+      containerSelector: ".ag-grid-scrolling-container",
+      rowSelectors: [
+        ".ag-grid-scrolling-container > .ag-row:not(.ag-opacity-zero):not(.ag-full-width-row)",
+      ],
+    },
   ];
 
   function isElementNode(value) {
@@ -369,11 +391,36 @@ export function browserExtractAgGrid(agGridRootElement, options = {}) {
     return [...rowElement.querySelectorAll(".ag-cell")];
   }
 
+  function getRowSelectors(tableElement) {
+    const rowLayout = agGridRowLayouts.find(
+      (layout) => tableElement.querySelectorAll(layout.containerSelector).length > 0
+    );
+
+    return rowLayout ? rowLayout.rowSelectors : agGridLegacyRowSelectors;
+  }
+
+  function getCellSelector(cellElement) {
+    const rowIndex = getAttributeValue(cellElement.closest(".ag-row"), "row-index");
+    const columnId = getAttributeValue(cellElement, "col-id");
+    return `.ag-row[row-index="${rowIndex}"] .ag-cell[col-id="${columnId}"]`;
+  }
+
+  function getCellValue(cellElement) {
+    if (options.returnCellSelectors) {
+      return getCellSelector(cellElement);
+    }
+
+    if (options.returnElements) {
+      return getAttributeValue(cellElement, "col-id") ?? getTrimmedTextContent(cellElement);
+    }
+
+    return getTrimmedTextContent(cellElement);
+  }
+
   if (!isElementNode(agGridRootElement)) {
     throw new Error(`Couldn't find a valid AG Grid element.`);
   }
 
-  const returnElements = options.returnElements ?? false;
   const tableElement = agGridRootElement.querySelectorAll(".ag-root")[0];
 
   if (!tableElement) {
@@ -399,12 +446,8 @@ export function browserExtractAgGrid(agGridRootElement, options = {}) {
 
   let allRows = [];
 
-  agGridColumnSelectors.forEach((selector) => {
-    [
-      ...tableElement.querySelectorAll(
-        `${selector}:not(.ag-hidden) .ag-row:not(.ag-opacity-zero)`
-      ),
-    ]
+  getRowSelectors(tableElement).forEach((selector) => {
+    [...tableElement.querySelectorAll(selector)]
       .filter(isRowNotDestroyedLocal)
       .sort(sortElementsByAttributeValue("row-index"))
       .forEach((rowElement) => {
@@ -428,9 +471,7 @@ export function browserExtractAgGrid(agGridRootElement, options = {}) {
     .map((rowCells) =>
       rowCells
         .sort(sortElementsByAttributeValue("aria-colindex"))
-        .map((element) =>
-          returnElements ? getAttributeValue(element, "col-id") ?? getTrimmedTextContent(element) : getTrimmedTextContent(element)
-        )
+        .map(getCellValue)
     );
 
   if (options.valuesArray) {

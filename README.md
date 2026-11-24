@@ -104,18 +104,21 @@ npm run test:cypress:all
 npm run test:cypress:v33
 npm run test:cypress:v34
 npm run test:cypress:v35
+npm run test:cypress:v36
 npm run test:cypress:watch
 
 npm run test:playwright:all
 npm run test:playwright:v33
 npm run test:playwright:v34
 npm run test:playwright:v35
+npm run test:playwright:v36
 npm run test:playwright:watch
 
 npm run test:wdio:all
 npm run test:wdio:v33
 npm run test:wdio:v34
 npm run test:wdio:v35
+npm run test:wdio:v36
 npm run test:wdio:watch
 ```
 

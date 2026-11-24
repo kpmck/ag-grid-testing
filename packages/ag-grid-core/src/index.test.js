@@ -126,6 +126,29 @@ function createGridFixture() {
   return { gridRoot, pinnedLeftRow0, centerRow0 };
 }
 
+function createSingleContainerGridFixture() {
+  const headerYear = createHeader(1, "Year");
+  const headerMake = createHeader(2, "Make");
+  const headerPrice = createHeader(3, "Price");
+
+  const row0 = createRow(0, [createCell(3, "35000"), createCell(1, "2020"), createCell(2, "Toyota")]);
+  const row1 = createRow(1, [createCell(1, "2021"), createCell(2, "Ford"), createCell(3, "32000")]);
+
+  const agRoot = new FakeElement();
+  agRoot.setSelectorMap({
+    ".ag-header-row-column [aria-colindex]": [headerYear, headerMake, headerPrice],
+    ".ag-grid-scrolling-container": [new FakeElement()],
+    ".ag-grid-scrolling-container > .ag-row:not(.ag-opacity-zero):not(.ag-full-width-row)": [row1, row0],
+  });
+
+  const gridRoot = new FakeElement();
+  gridRoot.setSelectorMap({
+    ".ag-root": [agRoot],
+  });
+
+  return { gridRoot };
+}
+
 test("extractAgGridData returns structured row data and filters destroyed rows", async () => {
   const { gridRoot } = createGridFixture();
   gridRoot.getAnimations = () => [];
@@ -150,6 +173,18 @@ test("extractAgGridData supports onlyColumns and valuesArray", async () => {
   assert.deepEqual(arrays.rows, [
     ["2020", "Toyota", "Celica"],
     ["2021", "Ford", "Mondeo"],
+  ]);
+});
+
+test("extractAgGridData reads rows from the single scrolling container layout", async () => {
+  const { gridRoot } = createSingleContainerGridFixture();
+  gridRoot.getAnimations = () => [];
+
+  const rows = await extractAgGridData(gridRoot);
+
+  assert.deepEqual(rows, [
+    { Year: "2020", Make: "Toyota", Price: "35000" },
+    { Year: "2021", Make: "Ford", Price: "32000" },
   ]);
 });
 
