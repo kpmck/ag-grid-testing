@@ -37,6 +37,6 @@
     "@kpmck/ag-grid-core": "1.0.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0"
+    "@playwright/test": "^1.65.1"
   }
 }

@@ -3,12 +3,10 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import net from "node:net";
 import { remote } from "webdriverio";
-import * as chromedriver from "chromedriver";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const serverScriptPath = path.resolve(__dirname, "../server.mjs");
-const chromedriverPath = chromedriver.path ?? chromedriver.default?.path;
 
 function waitForPort(port, host = "127.0.0.1", timeoutMs = 15000) {
   const start = Date.now();
@@ -64,37 +62,35 @@ async function startProcess(command, args, port) {
 
 export async function createWdioTestContext(options = {}) {
   const serverPort = options.serverPort ?? await getFreePort();
-  const chromedriverPort = options.chromedriverPort ?? await getFreePort();
 
   const serverProcess = await startProcess(
     process.execPath,
     [serverScriptPath, `--port=${serverPort}`],
     serverPort
   );
-  const driverProcess = await startProcess(
-    chromedriverPath,
-    [`--port=${chromedriverPort}`],
-    chromedriverPort
-  );
 
-  const browser = await remote({
-    logLevel: "error",
-    hostname: "127.0.0.1",
-    port: chromedriverPort,
-    path: "/",
-    capabilities: {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: [
-          "--headless=new",
-          "--disable-gpu",
-          "--no-sandbox",
-          "--disable-dev-shm-usage",
-          "--window-size=1440,1200",
-        ],
+  let browser;
+  try {
+    browser = await remote({
+      logLevel: "error",
+      capabilities: {
+        browserName: "chrome",
+        browserVersion: "stable",
+        "goog:chromeOptions": {
+          args: [
+            "--headless=new",
+            "--disable-gpu",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--window-size=1440,1200",
+          ],
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    serverProcess.kill("SIGTERM");
+    throw error;
+  }
 
   return {
     browser,
@@ -103,7 +99,6 @@ export async function createWdioTestContext(options = {}) {
       if (browser.sessionId) {
         await browser.deleteSession();
       }
-      driverProcess.kill("SIGTERM");
       serverProcess.kill("SIGTERM");
     },
   };
