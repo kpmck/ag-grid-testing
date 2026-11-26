@@ -77,24 +77,35 @@ export async function createWdioTestContext(options = {}) {
     chromedriverPort
   );
 
-  const browser = await remote({
-    logLevel: "error",
-    hostname: "127.0.0.1",
-    port: chromedriverPort,
-    path: "/",
-    capabilities: {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: [
-          "--headless=new",
-          "--disable-gpu",
-          "--no-sandbox",
-          "--disable-dev-shm-usage",
-          "--window-size=1440,1200",
-        ],
+  let browser;
+
+  try {
+    browser = await remote({
+      logLevel: "error",
+      hostname: "127.0.0.1",
+      port: chromedriverPort,
+      path: "/",
+      capabilities: {
+        browserName: "chrome",
+        "goog:chromeOptions": {
+          ...(process.env.WDIO_CHROME_BINARY
+            ? { binary: process.env.WDIO_CHROME_BINARY }
+            : {}),
+          args: [
+            "--headless=new",
+            "--disable-gpu",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--window-size=1440,1200",
+          ],
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    driverProcess.kill("SIGTERM");
+    serverProcess.kill("SIGTERM");
+    throw error;
+  }
 
   return {
     browser,

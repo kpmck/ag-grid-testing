@@ -59,19 +59,27 @@ class WdioLocator {
   }
 
   async waitFor({ state } = {}) {
-    const elements = await this._elements();
-    const element = elements[0];
+    await this.browser.waitUntil(
+      async () => {
+        const elements = await this._elements();
+        const element = elements[0];
 
-    if (!element) {
-      throw new Error("Unable to find locator element.");
-    }
+        if (!element) {
+          return false;
+        }
 
-    if (state === "visible") {
-      await element.waitForDisplayed();
-      return;
-    }
+        if (state === "visible") {
+          return element.isDisplayed().catch(() => false);
+        }
 
-    await element.waitForExist();
+        return element.isExisting().catch(() => false);
+      },
+      {
+        timeout: 5000,
+        interval: 100,
+        timeoutMsg: "Unable to find locator element.",
+      }
+    );
   }
 
   async click() {
