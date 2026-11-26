@@ -75,8 +75,13 @@ export async function createWdioTestContext(options = {}) {
       logLevel: "error",
       capabilities: {
         browserName: "chrome",
-        browserVersion: "stable",
+        ...(process.env.WDIO_CHROME_BINARY
+          ? {}
+          : { browserVersion: "stable" }),
         "goog:chromeOptions": {
+          ...(process.env.WDIO_CHROME_BINARY
+            ? { binary: process.env.WDIO_CHROME_BINARY }
+            : {}),
           args: [
             "--headless=new",
             "--disable-gpu",
