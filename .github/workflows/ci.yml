@@ -52,7 +52,7 @@ jobs:
 
   playwright-tests:
     name: Playwright Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -90,5 +90,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup matching Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: "146"
+
       - name: Run WDIO suite
         run: npm run test:wdio
+        env:
+          WDIO_CHROME_BINARY: ${{ steps.setup-chrome.outputs.chrome-path }}
