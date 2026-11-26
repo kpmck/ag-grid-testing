@@ -374,15 +374,14 @@ export class PlaywrightAgGrid {
       throw new Error(`Unable to find row matching ${JSON.stringify(rowMatcher)}.`);
     }
 
-    const valuesArray = await this.getData({ valuesArray: true });
-    const columnIndex = valuesArray.headers.indexOf(columnName);
+    const cellSelectors = await this.getData({ valuesArray: true, returnCellSelectors: true });
+    const columnIndex = cellSelectors.headers.indexOf(columnName);
 
     if (columnIndex === -1) {
       throw new Error(`Unable to find column "${columnName}".`);
     }
 
-    const visibleRows = this.rootLocator.locator(".ag-center-cols-clipper .ag-row:not(.ag-opacity-zero), .ag-center-cols-viewport .ag-row:not(.ag-opacity-zero)");
-    return visibleRows.nth(rowIndex).locator(".ag-cell").nth(columnIndex);
+    return this.rootLocator.locator(cellSelectors.rows[rowIndex][columnIndex]);
   }
 }
 

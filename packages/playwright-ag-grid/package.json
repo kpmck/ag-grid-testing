@@ -14,6 +14,7 @@
     "test:v33": "playwright test tests/ag-grid-data.v33.spec.js tests/ag-grid-elements.v33.spec.js",
     "test:v34": "playwright test tests/ag-grid-data.v34.spec.js tests/ag-grid-elements.v34.spec.js",
     "test:v35": "playwright test tests/ag-grid-data.v35.spec.js tests/ag-grid-elements.v35.spec.js tests/ag-grid-animation-wait.v35.spec.js",
+    "test:v36": "playwright test tests/ag-grid-data.v36.spec.js tests/ag-grid-elements.v36.spec.js",
     "test:watch": "playwright test --ui"
   },
   "publishConfig": {

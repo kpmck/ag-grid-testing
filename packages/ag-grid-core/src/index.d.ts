@@ -2,6 +2,7 @@ export interface AgGridExtractionOptions {
   onlyColumns?: string[];
   valuesArray?: boolean;
   returnElements?: boolean;
+  returnCellSelectors?: boolean;
   timeoutMs?: number;
 }
 

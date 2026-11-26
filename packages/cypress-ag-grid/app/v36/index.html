@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>AG Grid Cypress Example v36</title>
+  <script>
+    window.AG_GRID_EXAMPLE_VERSION = "v36";
+    window.AG_GRID_LIBRARY_VERSION = "36.3.0";
+    window.AG_GRID_DATA_PATH = "../data.json";
+  </script>
+  <script src="https://unpkg.com/ag-grid-enterprise@36.3.0/dist/ag-grid-enterprise.min.noStyle.js"></script>
+  <link rel="stylesheet" href="../ag-grid.css">
+  <link rel="stylesheet" href="../ag-theme-alpine.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 16px;
+    }
+
+    .example-header {
+      align-items: center;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .example-version {
+      border: 1px solid #7b341e;
+      border-radius: 999px;
+      color: #7b341e;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 4px 10px;
+    }
+
+    .example-links a {
+      color: #7b341e;
+      margin-right: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="example-header">
+    <h1>AG Grid Cypress Example</h1>
+    <span class="example-version">AG Grid v36</span>
+    <nav class="example-links">
+      <a href="./index.html">v36</a>
+      <a href="../index.html">v35</a>
+      <a href="../v34/index.html">v34</a>
+      <a href="../v33/index.html">v33</a>
+    </nav>
+  </div>
+  <div id="myGrid" style="height: 600px;width:900px;" class="ag-theme-alpine" sideBar="true"></div>
+  <script src="../grid-basic.js" type="text/javascript" charset="utf-8"></script>
+  <button onclick="MakeFloating(true)" id="floating">Floating</button>
+  <button onclick="MakeFloating(false)" id="nonFloating">Non Floating</button>
+  <div id="myGrid2" style="height: 600px;width:900px;" class="ag-theme-alpine" sideBar="true"></div>
+  <script src="../grid-grouped.js" type="text/javascript" charset="utf-8"></script>
+</body>
+
+</html>
