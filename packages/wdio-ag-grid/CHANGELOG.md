@@ -8,6 +8,8 @@
 
 ### Patch Changes
 
+- Stabilize WDIO data extraction while AG Grid row rendering settles.
+
 - Updated dependencies [b11d778]
   - @kpmck/ag-grid-core@1.1.0
 
