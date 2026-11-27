@@ -6,6 +6,7 @@ This repository uses npm workspaces plus Changesets for versioning and publishin
 
 - `cypress-ag-grid`
 - `playwright-ag-grid`
+- `wdio-ag-grid`
 - `@kpmck/ag-grid-core`
 
 Each package publishes to npm using the `name` field in its own `package.json`.
@@ -32,9 +33,8 @@ npm run release
 
 ## GitHub Actions
 
-- `.github/workflows/ci.yml` runs the core, Cypress, and Playwright test suites on pull requests and pushes to `main`.
-
-Automated publishing is currently disabled. Releases are intended to be versioned and published manually from a local machine for now.
+- `.github/workflows/ci.yml` runs the core, Cypress, Playwright, and WDIO test suites on pull requests and pushes to `main`.
+- `.github/workflows/npm-publish.yml` publishes versioned packages when a GitHub release is published.
 
 ## Manual Release Flow
 
@@ -43,7 +43,7 @@ Automated publishing is currently disabled. Releases are intended to be versione
 
 ```bash
 npm run version-packages
-npm run release
 ```
 
-3. Commit the version updates and tags produced by the release process as needed.
+3. Commit and merge the version updates after CI passes.
+4. Publish a GitHub release for the merged version commit. The release workflow publishes the changed packages to npm using the repository's `npm_token` secret.
