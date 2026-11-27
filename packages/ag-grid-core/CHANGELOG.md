@@ -1,5 +1,11 @@
 # @kpmck/ag-grid-core
 
+## 1.1.0
+
+### Minor Changes
+
+- b11d778: Support the AG Grid v36 DOM structure while keeping support for AG Grid v33-v35
+
 ## 1.0.1
 
 ### Patch Changes

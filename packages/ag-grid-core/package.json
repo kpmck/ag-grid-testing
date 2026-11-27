@@ -1,6 +1,6 @@
 {
   "name": "@kpmck/ag-grid-core",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Framework-agnostic AG Grid DOM helpers for Node-based test tooling",
   "type": "module",
   "main": "src/index.js",

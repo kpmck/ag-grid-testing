@@ -1,5 +1,16 @@
 # cypress-ag-grid
 
+## 3.5.0
+
+### Minor Changes
+
+- b11d778: Support the AG Grid v36 DOM structure while keeping support for AG Grid v33-v35
+
+### Patch Changes
+
+- Updated dependencies [b11d778]
+  - @kpmck/ag-grid-core@1.1.0
+
 ## 3.4.1
 
 ### Patch Changes
