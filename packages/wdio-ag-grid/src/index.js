@@ -356,8 +356,29 @@ export class WdioAgGrid {
   }
 
   async getData(options = {}) {
-    await this.browser.execute(browserWaitForAgGridAnimation, this.rootElement, options);
-    return this.browser.execute(browserExtractAgGrid, this.rootElement, options);
+    let previousData;
+    let stableReads = 0;
+    let data;
+
+    await this.browser.waitUntil(
+      async () => {
+        await this.browser.execute(browserWaitForAgGridAnimation, this.rootElement, options);
+        data = await this.browser.execute(browserExtractAgGrid, this.rootElement, options);
+
+        const serializedData = JSON.stringify(data);
+        stableReads = serializedData === previousData ? stableReads + 1 : 0;
+        previousData = serializedData;
+
+        return stableReads >= 2;
+      },
+      {
+        timeout: options.timeoutMs ?? 5000,
+        interval: 50,
+        timeoutMsg: "AG Grid row data did not stabilize before extraction.",
+      }
+    );
+
+    return data;
   }
 
   async sortColumn(columnName, sortDirection) {

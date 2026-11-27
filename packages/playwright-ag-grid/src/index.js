@@ -241,8 +241,27 @@ export class PlaywrightAgGrid {
   }
 
   async getData(options = {}) {
-    await this.rootLocator.evaluate(browserWaitForAgGridAnimation, options);
-    return this.rootLocator.evaluate(browserExtractAgGrid, options);
+    const timeoutMs = options.timeoutMs ?? 5000;
+    const deadline = Date.now() + timeoutMs;
+    let previousData;
+    let stableReads = 0;
+
+    while (Date.now() < deadline) {
+      await this.rootLocator.evaluate(browserWaitForAgGridAnimation, options);
+      const data = await this.rootLocator.evaluate(browserExtractAgGrid, options);
+      const serializedData = JSON.stringify(data);
+
+      stableReads = serializedData === previousData ? stableReads + 1 : 0;
+      previousData = serializedData;
+
+      if (stableReads >= 2) {
+        return data;
+      }
+
+      await this.rootLocator.page().waitForTimeout(50);
+    }
+
+    throw new Error("AG Grid row data did not stabilize before extraction.");
   }
 
   async sortColumn(columnName, sortDirection) {
